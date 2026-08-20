@@ -1,3 +1,4 @@
+# Just added some files to .gitignore from before
 # Virtual environment
 venv/
 env/
