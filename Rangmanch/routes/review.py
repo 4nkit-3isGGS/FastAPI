@@ -1,7 +1,13 @@
 from fastapi import APIRouter, Depends, Query
-from models import ReadReview, Review, UpdateReview, ReviewCreate, no_review_found_handler, NoReviewFound
 from sqlmodel import Session, select, func
 from database import get_session
+from models import (ReadReview, 
+                    Review,
+                    UpdateReview,
+                    ReviewCreate,
+                    NoReviewFound,
+                    NoReviewFoundById
+    )
 
 router = APIRouter(prefix="/api/reviews", tags=["Reviews"])
 
@@ -50,4 +56,26 @@ def get_average_rating(play_name: str, session: Session = Depends(get_session)):
         "total_reviews": total_reviews
     }
 
-   
+@router.get("/{id}", response_model= ReadReview)
+def get_review(id: int, session: Session = Depends(get_session)):
+    review = session.get(Review, id)
+    
+    if not review:
+        raise NoReviewFoundById(id=id)
+
+@router.patch("/{id}", response_model= ReadReview)
+def update_review(id: str, update: UpdateReview, session: Session= Depends(get_session)):
+    review = session.get(Review, id)
+    
+    if not review:
+        raise NoReviewFoundById(id=id)
+    
+    update_data = update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(review, key, value)
+
+    session.add(review)
+    session.commit()
+    session.refresh(review)
+
+    return review
