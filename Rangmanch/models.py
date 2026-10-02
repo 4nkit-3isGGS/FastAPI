@@ -37,13 +37,28 @@ class NoReviewFound(Exception):
     def __init__(self, play_name: str):
         self.play_name = play_name
 
-# Exception handlers
-async def no_review_found_handler(response: Request, exc: NoReviewFound):
+class NoReviewFoundById(Exception):
+    def __init__(self, id: int):
+        self.id = id
+
+
+# Exception handlers for custom exceptions
+async def no_review_found_handler(request: Request, exc: NoReviewFound):
      return JSONResponse(
         status_code= 404,
         content= {
             "error": "No Review found!",
             "message": f"There are no reviews for {exc.play_name} yet.",
             "play_name": exc.play_name
+        }
+    )
+
+async def no_review_found_by_id_handler(request: Request, exc: NoReviewFoundById):
+    return JSONResponse(
+        status_code= 404,
+          content= {
+            "error": "No Review found!",
+            "message": f"No reviews are found for ID: {exc.id}",
+            "id": exc.id
         }
     )
