@@ -37,17 +37,17 @@ def get_average_rating(play_name: str, session: Session = Depends(get_session)):
 
     result = session.exec(
         select(func.avg(Review.rating), func.count(Review.id)).where(Review.play_name == play_name)
-    )
+    ).first()
 
     average_rating, total_reviews = result
 
     if total_reviews == 0 :
-        raise NoReviewFound
+        raise NoReviewFound(play_name= play_name)
     
     return {
         "play_name": play_name,
         "average_rating": round(average_rating, 2),
-        "total_reviws": total_reviews
+        "total_reviews": total_reviews
     }
 
    
