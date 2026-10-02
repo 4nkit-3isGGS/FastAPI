@@ -62,6 +62,8 @@ def get_review(id: int, session: Session = Depends(get_session)):
     
     if not review:
         raise NoReviewFoundById(id=id)
+    
+    return review
 
 @router.patch("/{id}", response_model= ReadReview)
 def update_review(id: str, update: UpdateReview, session: Session= Depends(get_session)):
@@ -79,3 +81,14 @@ def update_review(id: str, update: UpdateReview, session: Session= Depends(get_s
     session.refresh(review)
 
     return review
+
+@router.delete("/{id}")
+def delete_review(id: int, session: Session= Depends(get_session)):
+    review = session.get(Review, id)
+
+    if not review:
+        raise NoReviewFoundById(id=id)
+    
+    session.delete(review)
+    session.commit()
+    
