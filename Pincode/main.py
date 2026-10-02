@@ -15,7 +15,7 @@ app = FastAPI(
     docs_url = "/docs"
 )
 
-# registering the  cusyom exception handlers 
+# registering the  custom exception handlers 
 app.add_exception_handler(PincodeNotFoundError, pincode_not_found_handler)
 app.add_exception_handler(InvalidPincodeError, invalid_pincode_handler)
 
