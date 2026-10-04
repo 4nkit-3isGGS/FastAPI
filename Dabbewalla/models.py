@@ -39,7 +39,14 @@ class StatusLog(SQLModel):
     new_status: OrderStatus
     changed_at: datetime = Field(default_factory=datetime.now)
     
-
+class ListOrders(SQLModel):
+    id: int
+    customer_name: str
+    delivery_address: str
+    created_at: datetime
+    updated_at: datetime
+    status: OrderStatus
+    items: str
 
 
 
